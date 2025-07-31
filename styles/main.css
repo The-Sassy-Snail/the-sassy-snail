@@ -207,3 +207,49 @@ nav a:hover {
   font-size: 2rem;
   margin-bottom: 10px;
 }
+
+.glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background: transparent;
+  z-index: 9999;
+  opacity: 0;
+}
+
+.glitch-active {
+  animation: glitchAnimation 0.6s steps(3) forwards;
+  background-image: linear-gradient(rgba(255,0,153,0.1), transparent);
+}
+
+@keyframes glitchAnimation {
+  0% {
+    opacity: 1;
+    clip-path: inset(0 0 90% 0);
+    transform: translateX(-10px);
+  }
+  20% {
+    clip-path: inset(50% 0 20% 0);
+    transform: translateX(10px);
+  }
+  40% {
+    clip-path: inset(10% 0 70% 0);
+    transform: translateX(-10px);
+  }
+  60% {
+    clip-path: inset(40% 0 40% 0);
+    transform: translateX(10px);
+  }
+  80% {
+    clip-path: inset(80% 0 10% 0);
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 0);
+    transform: translateX(0);
+  }
+}

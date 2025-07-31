@@ -58,12 +58,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadingMessages = [
       "Analyzing your vibe...",
-      "Looking deep into your soul...",
-      "Judging your snack preferences...",
-      "Consulting the glitter gods...",
-      "Asking a snail oracle...",
-      "Calculating emotional weirdness levels...",
-      "Measuring how haunted you are..."
+  "June is looking deep in your soul...",
+  "Sheesh... what did you EAT?",
+  "Reviewing your browser history 👀",
+  "Looking at all your intrusive thoughts...",
+  "Analyzing your guilty pleasures...",
+  "Asking the snails what they think...",
+  "Judging your aura in Comic Sans...",
+  "Running chaotic compatibility matrix...",
+  "Checking your vibes against the moon cycles..."
     ];
 
     let index = 0;

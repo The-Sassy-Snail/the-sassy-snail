@@ -65,7 +65,7 @@ function triggerGlitch() {
 
 // Random glitch interval (15–30s)
 function randomGlitchInterval() {
-  const interval = Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000;
+  const interval = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
   setTimeout(() => {
     triggerGlitch();
     randomGlitchInterval();

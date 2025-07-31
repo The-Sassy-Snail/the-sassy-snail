@@ -428,23 +428,51 @@ nav a:hover {
   margin-top: 40px;
 }
 
+/* ✨ Updated animated loading text style */
 .loading-text {
-  font-style: italic;
-  font-size: 1.2rem;
-  animation: pulseText 1.4s infinite;
+  font-family: 'Caveat', cursive;
+  font-size: 1.8rem;
+  color: var(--accent-color);
+  padding: 20px 0;
+  animation: glitchFade 1.4s ease-in-out;
 }
 
-@keyframes pulseText {
-  0% { opacity: 0.2; }
-  50% { opacity: 1; }
-  100% { opacity: 0.2; }
+@keyframes glitchFade {
+  0% { opacity: 0; transform: translateY(4px) scale(0.98) skewX(0deg); }
+  25% { opacity: 1; transform: translateY(0px) scale(1) skewX(1deg); }
+  50% { transform: translateX(-1px) skewX(-1deg); }
+  75% { transform: translateX(1px); }
+  100% { opacity: 1; transform: none; }
 }
 
+/* ✨ Soul tattoo result styling */
 .soul-tattoo {
   font-size: 1.8rem;
   color: var(--accent-color);
   margin: 20px 0 10px;
   font-family: 'Caveat', cursive;
+  position: relative;
+  animation: sparklePop 1s ease-in-out;
+}
+
+@keyframes sparklePop {
+  0% { transform: scale(0.8) rotate(-2deg); opacity: 0; }
+  50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.soul-tattoo::after {
+  content: " ✨";
+  animation: sparkleFlicker 0.9s infinite alternate;
+  position: absolute;
+  top: -10px;
+  right: -20px;
+  font-size: 1.5rem;
+}
+
+@keyframes sparkleFlicker {
+  0% { opacity: 0.3; transform: scale(0.9) rotate(5deg); }
+  100% { opacity: 1; transform: scale(1.1) rotate(-5deg); }
 }
 
 .tattoo-desc {
@@ -470,6 +498,7 @@ nav a:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Contact page banner */
 .contact-banner {
   width: 100%;
   overflow: hidden;

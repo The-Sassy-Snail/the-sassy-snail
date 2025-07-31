@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const soulTattooDesc = document.getElementById('tattoo-description');
   const startForm = document.getElementById('start-form');
 
-  // Tattoo results
   const tattoos = [
     {
       name: 'A toaster with cat ears floating in space',
@@ -58,22 +57,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadingMessages = [
       "Analyzing your vibe...",
-  "June is looking deep in your soul...",
-  "Sheesh... what did you EAT?",
-  "Reviewing your browser history 👀",
-  "Looking at all your intrusive thoughts...",
-  "Analyzing your guilty pleasures...",
-  "Asking the snails what they think...",
-  "Judging your aura in Comic Sans...",
-  "Running chaotic compatibility matrix...",
-  "Checking your vibes against the moon cycles..."
+      "June is looking deep in your soul...",
+      "Sheesh... what did you EAT?",
+      "Reviewing your browser history 👀",
+      "Looking at all your intrusive thoughts...",
+      "Analyzing your guilty pleasures...",
+      "Asking the snails what they think...",
+      "Judging your aura in Comic Sans...",
+      "Running chaotic compatibility matrix...",
+      "Checking your vibes against the moon cycles..."
     ];
+
+    // Shuffle messages for randomness
+    const shuffledMessages = loadingMessages
+      .map(msg => ({ msg, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ msg }) => msg);
 
     let index = 0;
     resultArea.style.display = 'none';
 
     const interval = setInterval(() => {
-      loadingText.textContent = loadingMessages[index % loadingMessages.length];
+      loadingText.textContent = shuffledMessages[index % shuffledMessages.length];
       index++;
     }, 1400);
 

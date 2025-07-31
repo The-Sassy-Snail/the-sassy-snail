@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('.weird-form');
+  const quizForm = document.getElementById('quiz-form');
   const resultSection = document.querySelector('.result-section');
   const quizContainer = document.querySelector('.quiz-container');
   const soulTattooOutput = document.getElementById('soul-tattoo');
@@ -45,9 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  const quizForm = document.getElementById('quiz-form');
   quizForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ We keep this for the quiz (not the contact form)
 
     quizContainer.style.display = 'none';
     resultSection.style.display = 'block';
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "Checking your vibes against the moon cycles..."
     ];
 
-    // Shuffle messages for randomness
+    // Shuffle for randomness
     const shuffledMessages = loadingMessages
       .map(msg => ({ msg, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
@@ -96,13 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4600);
   });
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-
-    alert(`Your message has been emotionally received.\nYou may or may not hear back. Or be cursed.`);
-    form.reset();
-  });
+  // 🚨 Do NOT block the actual contact form anymore
+  // We remove the e.preventDefault() entirely so Formspree can redirect
 });

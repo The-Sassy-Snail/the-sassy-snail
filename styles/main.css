@@ -81,7 +81,7 @@ nav a:hover {
 }
 
 .hero-text h2 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 800;
 }
 
@@ -280,7 +280,7 @@ nav a:hover {
   position: fixed;
   bottom: 15px;
   right: 20px;
-  font-size: 0.9rem;
+  font-size: 3.9rem;
   font-family: 'Caveat', cursive;
   color: var(--accent-color);
   opacity: 0.6;

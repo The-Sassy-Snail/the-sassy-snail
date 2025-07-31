@@ -294,26 +294,36 @@ nav a:hover {
 }
 
 .side-stickers {
-  position: fixed;
+  position: absolute;
   top: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 50;
-  padding: 20px;
-  pointer-events: none; /* So they don’t block UI */
+  z-index: 10;
+  width: 60px;
+  pointer-events: none;
+}
+
+.side-stickers.left {
+  left: -20px;
+}
+
+.side-stickers.right {
+  right: -20px;
 }
 
 .side-stickers img {
-  width: 40px;
+  position: absolute;
+  width: 45px;
   opacity: 0.9;
-  transition: transform 0.3s ease;
+  transform: rotate(calc(-10deg + 20deg * var(--rand)));
+  animation: stickerFloat 12s infinite ease-in-out;
 }
 
-.side-stickers img:hover {
-  transform: scale(1.2) rotate(6deg);
-  opacity: 1;
+/* Subtle float */
+@keyframes stickerFloat {
+  0%   { transform: translateY(0) rotate(0deg); }
+  50%  { transform: translateY(5px) rotate(2deg); }
+  100% { transform: translateY(0) rotate(0deg); }
 }
+
 
 /* Positioning */
 .side-stickers.left {

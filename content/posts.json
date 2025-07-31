@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Little Stink Doodle",
+    "date": "April 18, 2024",
+    "tags": ["art", "traditional"],
+    "image": "assets/images/test.jpg"
+  },
+  {
+    "title": "Glitchy Dancing Video",
+    "date": "April 12, 2024",
+    "tags": ["video", "animation"],
+    "image": "assets/images/test.jpg"
+  },
+  {
+    "title": "A poem for your soul",
+    "date": "April 10, 2024",
+    "tags": ["writing"],
+    "image": "assets/images/test.jpg"
+  },
+  {
+    "title": "Random Snail 3D",
+    "date": "March 30, 2024",
+    "tags": ["3D", "randomsh**"],
+    "image": "assets/images/test.jpg"
+  }
+]

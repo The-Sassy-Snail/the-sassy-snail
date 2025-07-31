@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Caveat:wght@400;700&display=swap');
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #111;
+  --accent-color: #ff0099;
+  --muted-color: #f1f1f1;
+  --dark-bg-color: #0e0e0e;
+  --transition-speed: 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+nav a {
+  margin-left: 15px;
+  font-weight: 700;
+  transition: color var(--transition-speed);
+}
+
+nav a:hover {
+  color: var(--accent-color);
+}
+
+/* Hero Video Section */
+.hero {
+  position: relative;
+  height: 70vh;
+  overflow: hidden;
+  background-color: var(--dark-bg-color);
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.subtle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: var(--accent-color);
+}
+
+/* Content Area */
+.content {
+  padding: 50px 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.tag {
+  padding: 5px 15px;
+  background: none;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.tag.active, .tag:hover {
+  background: var(--accent-color);
+  color: white;
+}
+
+.posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.post {
+  background: var(--muted-color);
+  padding: 15px;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.post img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.post .date {
+  font-size: 0.9rem;
+  color: #777;
+  margin-top: 10px;
+}
+
+.post .title {
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+/* Footer */
+.site-footer {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 0.9rem;
+  background-color: var(--dark-bg-color);
+  color: #fff;
+}
+
+/* Private Journal Teaser */
+.private {
+  background-color: var(--dark-bg-color);
+  color: #fff;
+  padding: 20px;
+  margin-top: 50px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1.2rem;
+}

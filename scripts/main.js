@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+document.addEventListener('mousemove', (e) => {
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  dot.style.left = `${e.clientX}px`;
+  dot.style.top = `${e.clientY}px`;
+  document.body.appendChild(dot);
+  setTimeout(() => dot.remove(), 600);
+});
+
+
 // Trigger glitch effect
 function triggerGlitch() {
   const glitchOverlay = document.querySelector('.glitch-overlay');
@@ -104,5 +114,31 @@ document.addEventListener('mousemove', (e) => {
 document.addEventListener('mouseleave', () => {
   document.body.style.transform = 'none';
 });
+
+const whispers = [
+  'hello.',
+  'what are you doing here?',
+  'you good?',
+  'J. is watching',
+  'snails remember',
+  'art is a threat',
+  'go ahead. click it.',
+  'i’m not lonely, you are'
+];
+
+setInterval(() => {
+  const w = document.createElement('div');
+  w.className = 'whisper';
+  w.textContent = whispers[Math.floor(Math.random() * whispers.length)];
+  document.body.appendChild(w);
+  setTimeout(() => w.remove(), 2000);
+}, 15000);
+
+document.querySelector('.dont-click-me')?.addEventListener('click', (e) => {
+  e.target.classList.add('clicked');
+  setTimeout(() => e.target.classList.remove('clicked'), 1000);
+});
+
+
 
 });

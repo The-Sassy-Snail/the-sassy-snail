@@ -294,7 +294,7 @@ nav a:hover {
 }
 
 .side-stickers {
-  position: relative;
+  position: absolute;
   top: 0;
   z-index: 10;
   width: 60px;

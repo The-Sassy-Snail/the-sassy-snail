@@ -7,47 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const startForm = document.getElementById('start-form');
 
   const tattoos = [
-    {
-      name: 'A toaster with cat ears floating in space',
-      desc: "Because you're breakfast and drama."
-    },
-    {
-      name: 'A pink Care Bear eating a TV remote',
-      desc: "Controlling the vibe from your soul."
-    },
-    {
-      name: 'An opossum reading a romance novel',
-      desc: "Trashy. Tender. Secretly emotional."
-    },
-    {
-      name: 'A dancing mushroom with a tiny knife',
-      desc: "Stabby, but cute."
-    },
-    {
-      name: 'A snail wearing fishnets and smoking a bubble pipe',
-      desc: "You. Are. The. Moment."
-    },
-    {
-      name: 'A frog in space yelling at the void',
-      desc: "Existential chic."
-    },
-    {
-      name: 'A haunted croissant',
-      desc: "You flake. In French."
-    },
-    {
-      name: 'A glittery eyeball crying confetti',
-      desc: "It hurts, but make it sparkle."
-    },
-    {
-      name: 'A plush duck on fire riding a skateboard',
-      desc: "Chaotic. Feathered. Fast."
-    }
+    { name: 'A toaster with cat ears floating in space', desc: "Because you're breakfast and drama." },
+    { name: 'A pink Care Bear eating a TV remote', desc: "Controlling the vibe from your soul." },
+    { name: 'An opossum reading a romance novel', desc: "Trashy. Tender. Secretly emotional." },
+    { name: 'A dancing mushroom with a tiny knife', desc: "Stabby, but cute." },
+    { name: 'A snail wearing fishnets and smoking a bubble pipe', desc: "You. Are. The. Moment." },
+    { name: 'A frog in space yelling at the void', desc: "Existential chic." },
+    { name: 'A haunted croissant', desc: "You flake. In French." },
+    { name: 'A glittery eyeball crying confetti', desc: "It hurts, but make it sparkle." },
+    { name: 'A plush duck on fire riding a skateboard', desc: "Chaotic. Feathered. Fast." }
   ];
 
   quizForm.addEventListener('submit', (e) => {
-    e.preventDefault(); // ✅ We keep this for the quiz (not the contact form)
-
+    e.preventDefault();
     quizContainer.style.display = 'none';
     resultSection.style.display = 'block';
 
@@ -67,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
       "Checking your vibes against the moon cycles..."
     ];
 
-    // Shuffle for randomness
     const shuffledMessages = loadingMessages
       .map(msg => ({ msg, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
@@ -90,20 +61,36 @@ document.addEventListener('DOMContentLoaded', () => {
       soulTattooOutput.textContent = tattoo.name;
       soulTattooDesc.textContent = tattoo.desc;
 
-      // Reveal the contact form
       startForm.style.display = 'block';
     }, 4600);
   });
 
-// Handle the contact form submission (let Formspree do its thing)
-const contactForm = document.querySelector('.weird-form');
+  // ✨ Custom submission for the Formspree-powered contact form
+  const contactForm = document.querySelector('.weird-form');
 
-if (contactForm) {
-  contactForm.addEventListener('submit', () => {
-    // No preventDefault here!
-    // Let Formspree handle the submission and redirect
-  });
-}
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent default submission
 
+      const formData = new FormData(contactForm);
 
+      fetch(contactForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/thanks.html'; // ✅ Manual redirect
+        } else {
+          alert('Oops. Something broke. Did a snail eat your message?');
+        }
+      })
+      .catch(() => {
+        alert('The vibes are off. Try again later.');
+      });
+    });
+  }
 });

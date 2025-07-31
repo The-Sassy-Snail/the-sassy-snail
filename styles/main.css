@@ -333,3 +333,25 @@ nav a:hover {
 .side-stickers.right {
   right: 0;
 }
+
+
+.about {
+  max-width: 800px;
+  margin: 60px auto 40px;
+  padding: 0 20px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.about h3 {
+  font-family: 'Caveat', cursive;
+  font-size: 2rem;
+  color: var(--accent-color);
+  margin-bottom: 10px;
+}
+
+.about p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}

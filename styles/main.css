@@ -278,14 +278,13 @@ nav a:hover {
 
 .whisper {
   position: fixed;
-  bottom: 15px;
-  right: 20px;
-  font-size: 3.9rem;
+  font-size: 0.9rem;
   font-family: 'Caveat', cursive;
   color: var(--accent-color);
   opacity: 0.6;
   animation: fadeInOut 2s ease forwards;
   z-index: 9999;
+  pointer-events: none;
 }
 
 @keyframes fadeInOut {

@@ -117,27 +117,33 @@ document.addEventListener('mouseleave', () => {
 
 const whispers = [
   'hello.',
-  'what are you doing here?',
   'you good?',
-  'J. is watching',
-  'snails remember',
+  'who sent you?',
+  'Yes, I am watching you',
+  'Do you even remember?',
   'art is a threat',
-  'go ahead. click it.',
-  'i’m not lonely, you are'
+  'leave. or don’t.',
+  'don’t click it.',
+  'this isn’t real',
+  'stay weird.',
+  'what even is this?'
 ];
 
 setInterval(() => {
   const w = document.createElement('div');
   w.className = 'whisper';
   w.textContent = whispers[Math.floor(Math.random() * whispers.length)];
+
+  // Random screen position (within safe bounds)
+  const x = Math.floor(Math.random() * (window.innerWidth - 150));
+  const y = Math.floor(Math.random() * (window.innerHeight - 50));
+  w.style.left = `${x}px`;
+  w.style.top = `${y}px`;
+
   document.body.appendChild(w);
   setTimeout(() => w.remove(), 2000);
-}, 15000);
+}, 12000); // every ~12s
 
-document.querySelector('.dont-click-me')?.addEventListener('click', (e) => {
-  e.target.classList.add('clicked');
-  setTimeout(() => e.target.classList.remove('clicked'), 1000);
-});
 
 
 

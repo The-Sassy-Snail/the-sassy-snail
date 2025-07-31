@@ -101,6 +101,8 @@ document.addEventListener('mousemove', (e) => {
   document.body.style.transition = 'transform 0.2s ease';
 });
 
-
+document.addEventListener('mouseleave', () => {
+  document.body.style.transform = 'none';
+});
 
 });

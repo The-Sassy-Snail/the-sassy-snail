@@ -74,3 +74,7 @@ function randomGlitchInterval() {
 
 // Start glitch effect loop
 randomGlitchInterval();
+
+
+    
+});

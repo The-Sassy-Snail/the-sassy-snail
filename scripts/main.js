@@ -63,6 +63,23 @@ function triggerGlitch() {
   }, 600); // Match CSS animation duration
 }
 
+function triggerGlitch() {
+  const glitchOverlay = document.querySelector('.glitch-overlay');
+  const glitchAudio = document.getElementById('glitch-audio');
+
+  // Visual effect
+  glitchOverlay.classList.add('glitch-active');
+  setTimeout(() => {
+    glitchOverlay.classList.remove('glitch-active');
+  }, 600);
+
+  // Audio effect
+  if (glitchAudio) {
+    glitchAudio.currentTime = 0;
+    glitchAudio.play();
+  }
+}
+
 // Random glitch interval (15–30s)
 function randomGlitchInterval() {
   const interval = Math.floor(Math.random() * (12000 - 5000 + 1)) + 5000;
@@ -75,6 +92,15 @@ function randomGlitchInterval() {
 // Start glitch effect loop
 randomGlitchInterval();
 
+// Subtle page distortion based on mouse movement
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 4;
+  const y = (e.clientY / window.innerHeight - 0.5) * 4;
 
-    
+  document.body.style.transform = `skew(${x}deg, ${y}deg)`;
+  document.body.style.transition = 'transform 0.2s ease';
+});
+
+
+
 });

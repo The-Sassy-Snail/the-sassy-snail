@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Contact – The Sassy Snail</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
 <body>
+
+  <div class="banner"></div>
 
   <header class="site-header">
     <h1 class="logo">THE SASSY SNAIL</h1>
@@ -17,7 +19,23 @@
     </nav>
   </header>
 
-  <main class="contact-page">
+  <!-- QUIZ GATE -->
+  <div class="quiz-gate" id="quiz-gate">
+    <h2>Hold Up.</h2>
+    <p>
+      You don’t just <em>contact</em> me.<br>
+      This isn’t a feedback form at the back of a Starbucks.<br><br>
+      Before I let you say anything, I need to know what kind of strange little creature you are.
+      Are you emotionally prepared? Can you vibe with me?<br><br>
+      Take the quiz. Or go touch grass.
+    </p>
+    <a href="quiz-result.html">
+      <button>Begin The Vibe Scan</button>
+    </a>
+  </div>
+
+  <!-- AFTER QUIZ FORM (can reveal via JS if you want post-quiz logic) -->
+  <main class="contact-page" id="contact-form">
     <h2>What do you want?</h2>
     <p class="contact-subtext">No jobs. No collabs. No spam. But if you must… answer these first:</p>
 

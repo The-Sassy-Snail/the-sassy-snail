@@ -356,62 +356,118 @@ nav a:hover {
   line-height: 1.6;
 }
 
+/* === Contact Page === */
 
 .contact-page {
-  max-width: 700px;
-  margin: 80px auto;
-  padding: 0 20px;
-  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+  background: #1a1a1a;
+  color: white;
+  padding: 40px 30px;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(255, 0, 153, 0.15);
 }
 
 .contact-page h2 {
   font-size: 2rem;
-  color: var(--accent-color);
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .contact-subtext {
   font-size: 1rem;
+  text-align: center;
   margin-bottom: 30px;
-  color: #777;
-}
-
-.weird-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-align: left;
+  color: #ccc;
 }
 
 .weird-form label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 600;
+  display: block;
+  margin-bottom: 20px;
+  font-size: 1rem;
 }
 
 .weird-form input,
 .weird-form textarea,
 .weird-form select {
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
   font-size: 1rem;
-}
-
-.weird-form button {
-  background-color: var(--accent-color);
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #0f0f0f;
   color: white;
-  padding: 10px 20px;
-  border: none;
-  font-weight: bold;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
-.weird-form button:hover {
-  background-color: #cc0077;
+.weird-form input:focus,
+.weird-form textarea:focus,
+.weird-form select:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+.weird-form button[type="submit"] {
+  margin-top: 10px;
+  background: var(--accent-color);
+  color: #111;
+  font-weight: bold;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.weird-form button[type="submit"]:hover {
+  background: #e60091;
+}
+
+/* Quiz Gate */
+
+.quiz-gate {
+  max-width: 600px;
+  margin: 0 auto 60px;
+  background: #111;
+  color: white;
+  padding: 40px 30px;
+  text-align: center;
+  border: 2px dashed var(--accent-color);
+  border-radius: 14px;
+}
+
+.quiz-gate h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.quiz-gate p {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.quiz-gate button {
+  background: var(--accent-color);
+  border: none;
+  padding: 12px 24px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: background 0.3s;
+}
+
+.quiz-gate button:hover {
+  background: #e60091;
+}
+
+/* Banner (you can override later) */
+.banner {
+  height: 60px;
+  width: 100%;
+  background: black;
+  margin-bottom: 30px;
 }

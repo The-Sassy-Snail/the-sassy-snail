@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Soul Tattoo</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .quiz-loader {
+      font-size: 1.3rem;
+      color: #aaa;
+      animation: flicker 1.2s infinite alternate;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+
+    .quiz-result h2 {
+      font-size: 2.2rem;
+      color: #ff00aa;
+    }
+
+    .quiz-result p {
+      font-size: 1.2rem;
+      margin: 1.4rem 0;
+      line-height: 1.6;
+    }
+
+    .quiz-result img {
+      width: 180px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: 2px solid #39ff14;
+    }
+
+    .quiz-result em {
+      color: #39ff14;
+    }
+
+    small {
+      display: block;
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOADING / SCANNING -->
+  <div class="quiz-loader" id="quiz-loader">
+    <p id="loading-line">Analyzing your vibe...</p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="quiz-result hidden" id="quiz-result">
+    <h2>✨ Personality Analysis Complete ✨</h2>
+    <p id="title"></p>
+    <img id="tattoo-img" src="assets/images/placeholder-tattoo.png" alt="Your Soul Tattoo">
+    <p id="tattoo"></p>
+    <small>*All results 100% emotionally binding. No refunds.</small>
+  </div>
+
+  <script>
+    const lines = [
+      "Analyzing your vibe...",
+      "June is looking deep in your soul...",
+      "Sheesh... what did you EAT?",
+      "Reviewing your browser history 👀",
+      "Looking at all your intrusive thoughts...",
+      "Analyzing your guilty pleasures...",
+      "Asking the snails what they think...",
+      "Judging your aura in Comic Sans...",
+      "Running chaotic compatibility matrix...",
+      "Checking your vibes against the moon cycles...",
+    ];
+
+    const results = [
+      {
+        title: "The Soft Chaos Romantic™",
+        tattoo: "A goldfish on a therapist’s couch whispering, “I remember everything.”"
+      },
+      {
+        title: "The Flaming Breadcrumb",
+        tattoo: "A pair of cherries with brass knuckles and intimacy issues."
+      },
+      {
+        title: "Emotionally Spicy but Lovable™",
+        tattoo: "A gravestone that says “She Tried xoxo” with Hello Kitty graffiti."
+      },
+      {
+        title: "The Art Goblin Supreme",
+        tattoo: "A pink Care Bear chain-smoking under a “Live Laugh Lobotomy” banner."
+      },
+      {
+        title: "The Secret Lurker™",
+        tattoo: "A snail mid-breakdown, holding a knife and a love letter."
+      },
+      {
+        title: "High-Functioning Disaster in Lip Gloss",
+        tattoo: "An alien DJing your insecurities at a rave for pigeons."
+      },
+      {
+        title: "Certified Feelings Hoarder™",
+        tattoo: "A brain with a “Back in 5 mins” sign taped to it, surrounded by anime sparkles."
+      },
+      {
+        title: "The Tender Cryptid",
+        tattoo: "A full moon crying into a martini glass while reading your old texts."
+      },
+      {
+        title: "Main Character in Someone Else’s Breakdown",
+        tattoo: "A VHS tape labeled “DON’T WATCH” with lipstick marks and teeth prints."
+      },
+      {
+        title: "Unstable but Fashionable™",
+        tattoo: "A pig in fishnets holding a “Legalize Chaos” protest sign."
+      },
+      {
+        title: "Emotional Raccoon in a Ball Gown",
+        tattoo: "A disco ball with trust issues and tiny fangs."
+      },
+      {
+        title: "Just Happy to Be Here (but armed)",
+        tattoo: "A juice box with a knife and a sticker that says “not emotionally refundable.”"
+      },
+      {
+        title: "Soft Baddie in Recovery™",
+        tattoo: "A burning heart texting “wyd?” to no one."
+      },
+      {
+        title: "Witchy Bitch with WiFi",
+        tattoo: "A crystal ball buffering forever while screaming in lowercase."
+      }
+    ];
+
+    let currentLine = 0;
+    const loaderEl = document.getElementById('quiz-loader');
+    const lineEl = document.getElementById('loading-line');
+    const resultEl = document.getElementById('quiz-result');
+
+    const interval = setInterval(() => {
+      currentLine++;
+      if (currentLine >= lines.length) {
+        clearInterval(interval);
+        loaderEl.classList.add('hidden');
+        resultEl.classList.remove('hidden');
+
+        const selected = results[Math.floor(Math.random() * results.length)];
+        document.getElementById('title').innerHTML = `🧠 You are: <strong>${selected.title}</strong>`;
+        document.getElementById('tattoo').innerHTML = `💉 <strong>Your Soul Tattoo:</strong><br><em>“${selected.tattoo}”</em>`;
+      } else {
+        lineEl.textContent = lines[currentLine];
+      }
+    }, 1200);
+  </script>
+</body>
+</html>

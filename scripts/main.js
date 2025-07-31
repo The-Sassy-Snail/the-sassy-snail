@@ -53,7 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-// Randomly trigger glitch effect every 20-40 seconds
+// Trigger glitch effect
+function triggerGlitch() {
+  const glitchOverlay = document.querySelector('.glitch-overlay');
+  glitchOverlay.classList.add('glitch-active');
+
+  setTimeout(() => {
+    glitchOverlay.classList.remove('glitch-active');
+  }, 600); // Match CSS animation duration
+}
+
+// Random glitch interval (15–30s)
 function randomGlitchInterval() {
   const interval = Math.floor(Math.random() * (30000 - 15000 + 1)) + 15000;
   setTimeout(() => {
@@ -62,17 +72,5 @@ function randomGlitchInterval() {
   }, interval);
 }
 
-// Random interval
-function randomGlitchInterval() {
-  const interval = Math.floor(Math.random() * (40000 - 20000 + 1)) + 20000;
-  setTimeout(() => {
-    triggerGlitch();
-    randomGlitchInterval();
-  }, interval);
-}
-
-// Start glitch effect
+// Start glitch effect loop
 randomGlitchInterval();
-
-    
-});

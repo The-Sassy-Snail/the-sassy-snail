@@ -292,3 +292,34 @@ nav a:hover {
   50% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-10px); }
 }
+
+.side-stickers {
+  position: fixed;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 50;
+  padding: 20px;
+  pointer-events: none; /* So they don’t block UI */
+}
+
+.side-stickers img {
+  width: 40px;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.side-stickers img:hover {
+  transform: scale(1.2) rotate(6deg);
+  opacity: 1;
+}
+
+/* Positioning */
+.side-stickers.left {
+  left: 0;
+}
+
+.side-stickers.right {
+  right: 0;
+}

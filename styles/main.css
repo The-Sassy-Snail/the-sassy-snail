@@ -355,3 +355,63 @@ nav a:hover {
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
+
+.contact-page {
+  max-width: 700px;
+  margin: 80px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.contact-page h2 {
+  font-size: 2rem;
+  color: var(--accent-color);
+  margin-bottom: 10px;
+}
+
+.contact-subtext {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  color: #777;
+}
+
+.weird-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.weird-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.weird-form input,
+.weird-form textarea,
+.weird-form select {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+.weird-form button {
+  background-color: var(--accent-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.weird-form button:hover {
+  background-color: #cc0077;
+}

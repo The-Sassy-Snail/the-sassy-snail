@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – The Sassy Snail</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="logo">THE SASSY SNAIL</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <main class="contact-page">
+    <h2>What do you want?</h2>
+    <p class="contact-subtext">No jobs. No collabs. No spam. But if you must… answer these first:</p>
+
+    <form class="weird-form">
+      <label>
+        Who even are you?
+        <input type="text" name="name" required />
+      </label>
+
+      <label>
+        Why are you here?
+        <textarea name="intent" rows="3" required></textarea>
+      </label>
+
+      <label>
+        What’s your favorite curse word (in any language)?
+        <input type="text" name="curse" />
+      </label>
+
+      <label>
+        Do you think snails have feelings?
+        <select name="snailfeelings">
+          <option>Yes</option>
+          <option>No</option>
+          <option>Emotionally unavailable</option>
+        </select>
+      </label>
+
+      <label>
+        Drop your email if you're emotionally prepared:
+        <input type="email" name="email" />
+      </label>
+
+      <button type="submit">Fine, Send It</button>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 The Sassy Snail. Cry harder.</p>
+  </footer>
+
+  <script src="scripts/form.js"></script>
+</body>
+</html>

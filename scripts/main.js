@@ -2,41 +2,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const postFeed = document.getElementById('post-feed');
   const tags = document.querySelectorAll('.tag');
 
-  // Load posts from JSON
   fetch('content/posts.json')
     .then(response => response.json())
     .then(posts => {
       displayPosts(posts);
 
-      // Tag filtering
       tags.forEach(tag => {
         tag.addEventListener('click', () => {
           document.querySelector('.tag.active').classList.remove('active');
           tag.classList.add('active');
-
           const tagFilter = tag.textContent.trim().toLowerCase();
           const filteredPosts = tagFilter === 'all'
             ? posts
             : posts.filter(post => post.tags.includes(tagFilter));
-
           displayPosts(filteredPosts);
         });
       });
-    });
 
-  // Function to display posts
-  function displayPosts(posts) {
-    postFeed.innerHTML = ''; // clear existing posts
+      function displayPosts(posts) {
+        postFeed.innerHTML = '';
 
-    posts.forEach(post => {
-      const postEl = document.createElement('div');
-      postEl.className = 'post';
-      postEl.innerHTML = `
-        <img src="${post.image}" alt="${post.title}" />
-        <p class="date">${post.date}</p>
-        <p class="title">${post.title}</p>
-      `;
-      postFeed.appendChild(postEl);
+        posts.forEach(post => {
+          const postEl = document.createElement('div');
+          postEl.className = 'post';
+          postEl.innerHTML = `
+            <img src="${post.image}" alt="${post.title}" />
+            <p class="date">${post.date}</p>
+            <p class="title">${post.title}</p>
+          `;
+          postEl.addEventListener('click', () => openPost(post));
+          postFeed.appendChild(postEl);
+        });
+      }
+
+      function openPost(post) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="${post.image}" alt="${post.title}" />
+            <h2>${post.title}</h2>
+            <p class="date">${post.date}</p>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.querySelector('.close').onclick = () => modal.remove();
+        window.onclick = (e) => { if (e.target == modal) modal.remove(); };
+      }
     });
-  }
 });

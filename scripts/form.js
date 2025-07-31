@@ -1,5 +1,92 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('.weird-form');
+  const resultSection = document.querySelector('.result-section');
+  const quizContainer = document.querySelector('.quiz-container');
+  const soulTattooOutput = document.getElementById('soul-tattoo');
+  const soulTattooDesc = document.getElementById('tattoo-description');
+  const startForm = document.getElementById('start-form');
+
+  // Tattoo results
+  const tattoos = [
+    {
+      name: 'A toaster with cat ears floating in space',
+      desc: "Because you're breakfast and drama."
+    },
+    {
+      name: 'A pink Care Bear eating a TV remote',
+      desc: "Controlling the vibe from your soul."
+    },
+    {
+      name: 'An opossum reading a romance novel',
+      desc: "Trashy. Tender. Secretly emotional."
+    },
+    {
+      name: 'A dancing mushroom with a tiny knife',
+      desc: "Stabby, but cute."
+    },
+    {
+      name: 'A snail wearing fishnets and smoking a bubble pipe',
+      desc: "You. Are. The. Moment."
+    },
+    {
+      name: 'A frog in space yelling at the void',
+      desc: "Existential chic."
+    },
+    {
+      name: 'A haunted croissant',
+      desc: "You flake. In French."
+    },
+    {
+      name: 'A glittery eyeball crying confetti',
+      desc: "It hurts, but make it sparkle."
+    },
+    {
+      name: 'A plush duck on fire riding a skateboard',
+      desc: "Chaotic. Feathered. Fast."
+    }
+  ];
+
+  const quizForm = document.getElementById('quiz-form');
+  quizForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    quizContainer.style.display = 'none';
+    resultSection.style.display = 'block';
+
+    const loadingText = document.getElementById('loading-text');
+    const resultArea = document.querySelector('.result-output');
+
+    const loadingMessages = [
+      "Analyzing your vibe...",
+      "Looking deep into your soul...",
+      "Judging your snack preferences...",
+      "Consulting the glitter gods...",
+      "Asking a snail oracle...",
+      "Calculating emotional weirdness levels...",
+      "Measuring how haunted you are..."
+    ];
+
+    let index = 0;
+    resultArea.style.display = 'none';
+
+    const interval = setInterval(() => {
+      loadingText.textContent = loadingMessages[index % loadingMessages.length];
+      index++;
+    }, 1400);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      loadingText.style.display = 'none';
+      resultArea.style.display = 'block';
+
+      const tattoo = tattoos[Math.floor(Math.random() * tattoos.length)];
+      soulTattooOutput.textContent = tattoo.name;
+      soulTattooDesc.textContent = tattoo.desc;
+
+      // Reveal the contact form
+      startForm.style.display = 'block';
+    }, 4600);
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -7,10 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    // TODO: Connect to actual backend/email service
-    // For now, simulate submission
-    alert(`💌 Message sent!\n\nYou're now emotionally linked to June.`);
-
+    alert(`Your message has been emotionally received.\nYou may or may not hear back. Or be cursed.`);
     form.reset();
   });
 });

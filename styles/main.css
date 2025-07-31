@@ -521,3 +521,25 @@ nav a:hover {
   font-style: italic;
   max-width: 700px;
 }
+
+.thanks-page {
+  padding: 60px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.thanks-copy {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.return-home a {
+  display: inline-block;
+  margin-top: 20px;
+  font-weight: bold;
+  color: var(--accent-color);
+  text-decoration: underline;
+}

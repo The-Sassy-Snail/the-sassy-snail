@@ -95,6 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4600);
   });
 
-  // 🚨 Do NOT block the actual contact form anymore
-  // We remove the e.preventDefault() entirely so Formspree can redirect
+// Handle the contact form submission (let Formspree do its thing)
+const contactForm = document.querySelector('.weird-form');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', () => {
+    // No preventDefault here!
+    // Let Formspree handle the submission and redirect
+  });
+}
+
+
 });

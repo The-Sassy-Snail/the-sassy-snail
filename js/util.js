@@ -1,5 +1,3 @@
-import { RUN_DAYS } from './data.js';
-
 export function toDateKey(d) {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -18,33 +16,14 @@ export function addDays(d, n) {
   return copy;
 }
 
-export function isRunDay(d) {
-  return RUN_DAYS.includes(d.getDay());
-}
-
-export function isSunday(d) {
-  return d.getDay() === 0;
-}
-
-// Returns the list of sections (from a template) that apply on date `d`.
+// Returns the list of sections (from a template) that apply on date `d`,
+// based on each section's own weekday picker (`days`) and whether it's
+// evaluated against that date or the day before (`basis`).
 export function sectionsForDate(template, d) {
-  const runToday = isRunDay(d);
-  const runTomorrow = isRunDay(addDays(d, 1));
   return template.sections.filter((s) => {
-    switch (s.condition) {
-      case 'always':
-        return true;
-      case 'notRunday':
-        return !runToday;
-      case 'runday':
-        return runToday;
-      case 'tomorrowRunday':
-        return !runToday && runTomorrow;
-      case 'sunday':
-        return isSunday(d);
-      default:
-        return true;
-    }
+    const days = s.days || [0, 1, 2, 3, 4, 5, 6];
+    const target = s.basis === 'tomorrow' ? addDays(d, 1) : d;
+    return days.includes(target.getDay());
   });
 }
 

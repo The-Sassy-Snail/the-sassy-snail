@@ -1,5 +1,5 @@
 import * as store from '../store.js';
-import { toDateKey, fromDateKey, addDays, friendlyDate, isRunDay, isSunday } from '../util.js';
+import { toDateKey, fromDateKey, addDays, friendlyDate } from '../util.js';
 
 function collapseKey(sectionId) {
   return `sb-collapsed-${sectionId}`;
@@ -52,8 +52,6 @@ export function renderToday(container, initialDateKey, opts = {}) {
     const editable = opts.alwaysEditable !== false; // by default every day is editable
 
     const badges = [];
-    if (isRunDay(date)) badges.push('🏃 Run day');
-    if (isSunday(date)) badges.push('🧺 Weekly reset');
     if (dateKey === todayKey) badges.push('📍 Today');
 
     container.innerHTML = `

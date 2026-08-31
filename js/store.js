@@ -16,6 +16,33 @@ export function templateCacheKey(u) {
   return `sb-template-cache-${u}`;
 }
 
+// Converts sections saved under the old scheme (a fixed 'always' /
+// 'notRunday' / 'runday' / 'tomorrowRunday' / 'sunday' condition) into the
+// current weekday-picker scheme ({ days: [0-6], basis: 'today'|'tomorrow' }).
+// Returns [migratedTemplate, didChange].
+function migrateTemplate(tpl) {
+  const ALL = [0, 1, 2, 3, 4, 5, 6];
+  const RUN = [0, 2, 4];
+  const NOT_RUN = [1, 3, 5, 6];
+  let changed = false;
+  const sections = tpl.sections.map((s) => {
+    if (s.days) return s;
+    changed = true;
+    const { condition, ...rest } = s;
+    let days = ALL;
+    let basis = 'today';
+    if (condition === 'runday') days = RUN;
+    else if (condition === 'notRunday') days = NOT_RUN;
+    else if (condition === 'sunday') days = [0];
+    else if (condition === 'tomorrowRunday') {
+      days = RUN;
+      basis = 'tomorrow';
+    }
+    return { ...rest, days, basis };
+  });
+  return [{ ...tpl, sections }, changed];
+}
+
 export async function initForUser(userId) {
   uid = userId;
   dayCache.clear();
@@ -23,7 +50,8 @@ export async function initForUser(userId) {
   const cachedRaw = localStorage.getItem(templateCacheKey(uid));
   if (cachedRaw) {
     try {
-      template = JSON.parse(cachedRaw);
+      const [migrated] = migrateTemplate(JSON.parse(cachedRaw));
+      template = migrated;
       emit('template', template);
     } catch {
       /* ignore corrupt cache */
@@ -37,18 +65,27 @@ export async function initForUser(userId) {
     console.warn('Could not reach Firestore for template, using cache/default', e);
   }
 
+  let needsRewrite = false;
   if (remote) {
-    template = remote;
+    const [migrated, changed] = migrateTemplate(remote);
+    template = migrated;
+    needsRewrite = changed;
   } else if (!template) {
     template = defaultTemplate();
+    needsRewrite = true;
+  }
+
+  localStorage.setItem(templateCacheKey(uid), JSON.stringify(template));
+  emit('template', template);
+
+  if (needsRewrite) {
     try {
       await fb.writeTemplate(uid, template);
     } catch (e) {
-      console.warn('Could not seed default template remotely (offline?)', e);
+      console.warn('Could not save migrated/seeded template remotely (offline?)', e);
     }
   }
-  localStorage.setItem(templateCacheKey(uid), JSON.stringify(template));
-  emit('template', template);
+
   return template;
 }
 

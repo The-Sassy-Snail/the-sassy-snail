@@ -1,13 +1,7 @@
 import * as store from '../store.js';
 import { slugify } from '../data.js';
 
-const CONDITIONS = [
-  { value: 'always', label: 'Every day' },
-  { value: 'notRunday', label: 'Non-run days only' },
-  { value: 'runday', label: 'Run days only (Tue/Thu/Sun)' },
-  { value: 'tomorrowRunday', label: 'When tomorrow is a run day' },
-  { value: 'sunday', label: 'Sundays only' },
-];
+const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 function uniqueId(existingIds, base) {
   let id = slugify(base) || 'item';
@@ -67,11 +61,19 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail 
             <button class="icon-btn danger" data-del-sec="${sIdx}">✕</button>
           </div>
         </div>
-        <label class="cond-label">Shows:
-          <select data-cond="${sIdx}">
-            ${CONDITIONS.map((c) => `<option value="${c.value}" ${c.value === sec.condition ? 'selected' : ''}>${c.label}</option>`).join('')}
-          </select>
-        </label>
+        <div class="day-picker">
+          <span class="day-picker-label">Shows on:</span>
+          <div class="day-pills">
+            ${DAY_LABELS.map(
+              (label, i) => `
+              <button type="button" class="day-pill ${sec.days.includes(i) ? 'active' : ''}" data-day="${sIdx}:${i}">${label}</button>`
+            ).join('')}
+          </div>
+          <div class="basis-pills">
+            <button type="button" class="basis-pill ${sec.basis !== 'tomorrow' ? 'active' : ''}" data-basis="${sIdx}:today">that day</button>
+            <button type="button" class="basis-pill ${sec.basis === 'tomorrow' ? 'active' : ''}" data-basis="${sIdx}:tomorrow">the evening before</button>
+          </div>
+        </div>
         <ul class="editor-items" data-items-for="${sIdx}">
           ${sec.items
             .map(
@@ -94,7 +96,15 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail 
     container.querySelector('#add-section').onclick = () => {
       const ids = allIds();
       const id = uniqueId(ids, `section-${template.sections.length + 1}`);
-      template.sections.push({ id, emoji: '📝', title: 'New section', condition: 'always', note: null, items: [] });
+      template.sections.push({
+        id,
+        emoji: '📝',
+        title: 'New section',
+        days: [0, 1, 2, 3, 4, 5, 6],
+        basis: 'today',
+        note: null,
+        items: [],
+      });
       persist();
       draw();
     };
@@ -107,11 +117,27 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail 
       });
     });
 
-    editor.querySelectorAll('select[data-cond]').forEach((sel) => {
-      sel.addEventListener('change', () => {
-        const idx = Number(sel.getAttribute('data-cond'));
-        template.sections[idx].condition = sel.value;
+    editor.querySelectorAll('[data-day]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const [sIdx, dayStr] = btn.getAttribute('data-day').split(':');
+        const idx = Number(sIdx);
+        const day = Number(dayStr);
+        const days = template.sections[idx].days;
+        const pos = days.indexOf(day);
+        if (pos === -1) days.push(day);
+        else days.splice(pos, 1);
+        days.sort((a, b) => a - b);
         persist();
+        draw();
+      });
+    });
+
+    editor.querySelectorAll('[data-basis]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const [sIdx, basis] = btn.getAttribute('data-basis').split(':');
+        template.sections[Number(sIdx)].basis = basis;
+        persist();
+        draw();
       });
     });
 

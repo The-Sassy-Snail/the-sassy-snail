@@ -2,7 +2,10 @@
 // their edited copy is what actually gets stored in Firestore. This file only
 // seeds a brand new account.
 
-export const RUN_DAYS = [0, 2, 4]; // Sunday, Tuesday, Thursday (JS getDay())
+const ALL_DAYS = [0, 1, 2, 3, 4, 5, 6]; // JS getDay(): 0 = Sunday
+const RUN_DAYS = [0, 2, 4]; // Sunday, Tuesday, Thursday
+const NON_RUN_DAYS = [1, 3, 5, 6]; // Monday, Wednesday, Friday, Saturday
+const SUNDAY_ONLY = [0];
 
 function slugify(label) {
   return label
@@ -15,16 +18,17 @@ function item(label, starred = false) {
   return { id: slugify(label), label, starred };
 }
 
-function section(id, emoji, title, condition, items, note) {
-  return { id, emoji, title, condition, note: note || null, items };
+// days: which weekdays (0=Sun..6=Sat) this section shows on.
+// basis: 'today' (default) checks the viewed date's weekday; 'tomorrow'
+// checks the *next* day's weekday (for evening prep-ahead sections).
+function section(id, emoji, title, days, items, note, basis) {
+  return { id, emoji, title, days, basis: basis || 'today', note: note || null, items };
 }
-
-// condition: 'always' | 'notRunday' | 'runday' | 'tomorrowRunday' | 'sunday'
 
 export function defaultTemplate() {
   return {
     sections: [
-      section('wake', '☀️', 'Wake up', 'always', [
+      section('wake', '☀️', 'Wake up', ALL_DAYS, [
         item('Wake up'),
         item('Turn off alarm'),
         item('Open curtains/blinds'),
@@ -40,13 +44,13 @@ export function defaultTemplate() {
         item('Jewelry/accessories'),
         item('Medication/supplements, if applicable'),
       ]),
-      section('dog-morning', '🐕', 'Dog', 'always', [
+      section('dog-morning', '🐕', 'Dog', ALL_DAYS, [
         item('Morning dog walk', true),
         item('Feed dog'),
         item('Refresh water'),
         item('Quick paws/coat check if needed'),
       ]),
-      section('breakfast-prep', '🍳', 'Breakfast & work prep', 'always', [
+      section('breakfast-prep', '🍳', 'Breakfast & work prep', ALL_DAYS, [
         item('Breakfast'),
         item('Coffee/tea'),
         item('Pack lunch'),
@@ -60,7 +64,7 @@ export function defaultTemplate() {
         item('Check weather'),
         item('Check calendar/schedule'),
       ]),
-      section('morning-extras', '🧘', 'Optional morning extras', 'always', [
+      section('morning-extras', '🧘', 'Optional morning extras', ALL_DAYS, [
         item('Stretching'),
         item('Mobility'),
         item('Meditation'),
@@ -72,7 +76,7 @@ export function defaultTemplate() {
         item('Write 3 priorities for the day'),
         item('Quick bedroom tidy'),
       ]),
-      section('before-leaving', '🚪', 'Before leaving', 'always', [
+      section('before-leaving', '🚪', 'Before leaving', ALL_DAYS, [
         item('Final bathroom check'),
         item('Shoes/coat'),
         item('Dog has everything they need'),
@@ -81,7 +85,7 @@ export function defaultTemplate() {
         item('Leave by 7:30 AM', true),
       ]),
 
-      section('home-reset', '🏠', 'Home reset', 'notRunday', [
+      section('home-reset', '🏠', 'Home reset', NON_RUN_DAYS, [
         item('Dishes', true),
         item('Load/unload dishwasher'),
         item('Wipe kitchen counters'),
@@ -93,7 +97,7 @@ export function defaultTemplate() {
         item('Quick living-room reset'),
         item('Prepare anything needed for tomorrow'),
       ]),
-      section('dog-evening', '🐕', 'Dog care', 'notRunday', [
+      section('dog-evening', '🐕', 'Dog care', NON_RUN_DAYS, [
         item('Evening dog walk'),
         item('Feed dog'),
         item('Refresh water'),
@@ -105,7 +109,7 @@ export function defaultTemplate() {
         item('Refill poop bags'),
         item('Prep anything dog-related needed for tomorrow'),
       ]),
-      section('tomorrow-prep', '👗', 'Tomorrow prep', 'notRunday', [
+      section('tomorrow-prep', '👗', 'Tomorrow prep', NON_RUN_DAYS, [
         item("Prepare tomorrow's clothes", true),
         item('Prepare underwear'),
         item('Prepare socks'),
@@ -127,7 +131,7 @@ export function defaultTemplate() {
         'tomorrow-run-prep',
         '🏃',
         'If tomorrow is a run day',
-        'tomorrowRunday',
+        RUN_DAYS,
         [
           item('Put out running clothes', true),
           item('Put out running socks'),
@@ -136,9 +140,10 @@ export function defaultTemplate() {
           item('Prepare any running accessories'),
           item('Check running route/workout if relevant'),
         ],
-        "So you're not waking up thinking “oh god, I have to run today.” You're waking up to: my running clothes are already there. Cool."
+        "So you're not waking up thinking “oh god, I have to run today.” You're waking up to: my running clothes are already there. Cool.",
+        'tomorrow'
       ),
-      section('evening-personal-care', '🧴', 'Evening personal care', 'notRunday', [
+      section('evening-personal-care', '🧴', 'Evening personal care', NON_RUN_DAYS, [
         item('Shower'),
         item('Brush teeth'),
         item('Floss'),
@@ -150,7 +155,7 @@ export function defaultTemplate() {
         item('Lip balm'),
         item('Other personal care'),
       ]),
-      section('wind-down', '🌙', 'Wind-down', 'notRunday', [
+      section('wind-down', '🌙', 'Wind-down', NON_RUN_DAYS, [
         item('Dim lights'),
         item('Reduce screens'),
         item('Put phone on charge'),
@@ -167,7 +172,7 @@ export function defaultTemplate() {
         item('Sleep'),
       ]),
 
-      section('run-before', '🏃', 'Before the run', 'runday', [
+      section('run-before', '🏃', 'Before the run', RUN_DAYS, [
         item('Put on running clothes'),
         item('Bathroom'),
         item('Water'),
@@ -181,7 +186,7 @@ export function defaultTemplate() {
         'run-after',
         '🏃',
         'After the run',
-        'runday',
+        RUN_DAYS,
         [
           item('Cool down'),
           item('Water'),
@@ -203,7 +208,7 @@ export function defaultTemplate() {
         "Run-night rule: minimum cleanup only. You ran, you're tired — dishes + essentials is enough."
       ),
 
-      section('weekly-plan', '📅', 'Plan the week', 'sunday', [
+      section('weekly-plan', '📅', 'Plan the week', SUNDAY_ONLY, [
         item('Check calendar'),
         item('Check work schedule'),
         item("Check boyfriend's schedule"),
@@ -215,7 +220,7 @@ export function defaultTemplate() {
         item('Check upcoming commitments'),
         item('Plan anything unusual for the week'),
       ]),
-      section('weekly-food', '🥗', 'Food', 'sunday', [
+      section('weekly-food', '🥗', 'Food', SUNDAY_ONLY, [
         item('Check fridge/freezer'),
         item('Make grocery list'),
         item('Grocery shop/order'),
@@ -224,7 +229,7 @@ export function defaultTemplate() {
         item('Prepare breakfast options'),
         item('Prepare snacks'),
       ]),
-      section('weekly-laundry', '👚', 'Laundry & clothes', 'sunday', [
+      section('weekly-laundry', '👚', 'Laundry & clothes', SUNDAY_ONLY, [
         item('Laundry'),
         item('Put laundry away'),
         item('Change bedding'),
@@ -233,7 +238,7 @@ export function defaultTemplate() {
         item('Plan a few outfits'),
         item('Check running clothes'),
       ]),
-      section('weekly-home', '🏠', 'Home', 'sunday', [
+      section('weekly-home', '🏠', 'Home', SUNDAY_ONLY, [
         item('General tidy'),
         item('Vacuum'),
         item('Dust'),
@@ -242,7 +247,7 @@ export function defaultTemplate() {
         item('Take rubbish out'),
         item('Restock household supplies'),
       ]),
-      section('weekly-dog', '🐕', 'Dog', 'sunday', [
+      section('weekly-dog', '🐕', 'Dog', SUNDAY_ONLY, [
         item('Check dog food'),
         item('Restock treats'),
         item('Restock poop bags'),
@@ -250,7 +255,7 @@ export function defaultTemplate() {
         item('Check grooming supplies'),
         item('Check anything needed for the week'),
       ]),
-      section('weekly-personal', '🧴', 'Personal', 'sunday', [
+      section('weekly-personal', '🧴', 'Personal', SUNDAY_ONLY, [
         item('Restock toiletries'),
         item('Hair-care reset'),
         item('Longer skincare/self-care'),

@@ -14,6 +14,31 @@ function setCollapsed(sectionId, val) {
   else localStorage.removeItem(collapseKey(sectionId));
 }
 
+const CONFETTI_COLORS = ['#d97757', '#eab04a', '#a9bf9f', '#e8a187', '#f3d3bd'];
+
+function celebrate() {
+  const banner = document.createElement('div');
+  banner.className = 'celebrate-banner';
+  banner.textContent = '🎉 Day complete — nice work!';
+  document.body.appendChild(banner);
+  requestAnimationFrame(() => banner.classList.add('show'));
+  setTimeout(() => {
+    banner.classList.remove('show');
+    setTimeout(() => banner.remove(), 350);
+  }, 2200);
+
+  for (let i = 0; i < 24; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = `${Math.random() * 100}vw`;
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    piece.style.animationDuration = `${1.4 + Math.random() * 1.2}s`;
+    piece.style.animationDelay = `${Math.random() * 0.3}s`;
+    document.body.appendChild(piece);
+    piece.addEventListener('animationend', () => piece.remove());
+  }
+}
+
 export function renderToday(container, initialDateKey, opts = {}) {
   let dateKey = initialDateKey || toDateKey(new Date());
   let unwatch = null;
@@ -125,6 +150,7 @@ export function renderToday(container, initialDateKey, opts = {}) {
       const total = allBoxes.length;
       const done = Array.from(allBoxes).filter((c) => c.checked).length;
       updateOverall(done, total);
+      if (total > 0 && done === total) celebrate();
     }
   }
 

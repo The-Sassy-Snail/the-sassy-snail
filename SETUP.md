@@ -1,30 +1,46 @@
-# Setup
+# Setup — step by step, no coding required
 
-This is a private, installable checklist + calendar app for your daily routine. It's a static site (no server) that syncs your data through a Firebase project **you** own — nothing goes through any third party besides Firebase/Google, and only you can read your data.
+You'll do this once. It takes about 10-15 minutes. Every step is clicking buttons and filling in boxes — nothing here requires knowing how to code. If anything looks different from what's described (Google/GitHub redesign their screens sometimes), the button you want is usually still there, just moved — look for the closest-sounding label.
 
-## 1. Create your Firebase project
+Two accounts are involved and it's easy to mix them up, so keep this straight:
+- **GitHub** = where this website's files live, and where the site itself is hosted.
+- **Firebase** (a Google product) = where your private checklist data (your check-offs, your history) is stored. You're about to create this one from scratch.
 
-1. Go to [console.firebase.google.com](https://console.firebase.google.com) and sign in with your Google account.
-2. **Add project** → name it anything (e.g. `sassy-snail-routine`) → you can skip Google Analytics.
-3. Once created, click the **web icon (`</>`)** on the project overview page to register a web app. Give it any nickname. You don't need Firebase Hosting.
-4. Firebase will show you a `firebaseConfig` object that looks like:
-   ```js
-   {
-     apiKey: "AIza...",
-     authDomain: "sassy-snail-routine.firebaseapp.com",
-     projectId: "sassy-snail-routine",
-     storageBucket: "sassy-snail-routine.appspot.com",
-     messagingSenderId: "...",
-     appId: "..."
-   }
+---
+
+## Step 1 — Create your Firebase project
+
+1. Go to **console.firebase.google.com** and sign in with any Google account (Gmail account) — this can be your personal one.
+2. Click **Create a project** (sometimes labeled **Add project**).
+3. Type any name you like, e.g. `my routine` — it's just a label for you, nobody else sees it. Click **Continue**.
+4. It will ask about **Google Analytics** — turn the toggle **off** (you don't need it), then click **Create project**.
+5. Wait for it to finish (~30 seconds), then click **Continue**. You'll land on a project dashboard.
+
+## Step 2 — Register a "web app" inside that project
+
+This step gets you a block of text (your "config") that lets the checklist app talk to your Firebase project.
+
+1. On the project dashboard, look for a row of small icons near the top — one looks like `</>`. Click it. (It might be labeled "Web".)
+2. Give the app a nickname, e.g. `routine app`. Leave the other checkboxes unchecked. Click **Register app**.
+3. You'll now see a gray code box that starts with something like:
    ```
-   Keep this tab open — you'll paste this into the app in step 5.
+   const firebaseConfig = {
+     apiKey: "AIza...",
+     authDomain: "...",
+     ...
+   };
+   ```
+   **Leave this browser tab open** — you'll come back to copy this in Step 6. (If you accidentally close it: go to the gear icon ⚙️ next to "Project Overview" → **Project settings**, scroll down to "Your apps", and it's shown there again.)
+4. Click **Continue to console**.
 
-## 2. Turn on Firestore
+## Step 3 — Turn on the database (Firestore)
 
-1. In the left sidebar: **Build → Firestore Database → Create database**.
-2. Choose **Production mode**, pick any region close to you.
-3. Once it's created, go to the **Rules** tab and replace the contents with:
+1. In the left-hand menu, find **Build**, and under it click **Firestore Database**.
+2. Click **Create database**.
+3. Choose **Production mode** (should be selected by default, or you'll see a toggle — pick "Production"). Click **Next**.
+4. Pick any location close to you from the dropdown (the default is usually fine). Click **Enable**.
+5. Once it loads, click the **Rules** tab (near the top of the Firestore page).
+6. You'll see a box of text. **Select all of it and delete it**, then paste this in its place:
 
    ```
    rules_version = '2';
@@ -36,39 +52,58 @@ This is a private, installable checklist + calendar app for your daily routine. 
      }
    }
    ```
-4. Click **Publish**. This means only a signed-in user can read or write their *own* data — nobody else's, and nothing is readable while signed out.
+7. Click **Publish**. (This is the part that makes your data private — it tells Firebase "only let someone in if they're logged in as the owner of this exact data.")
 
-## 3. Turn on sign-in and create your one account
+## Step 4 — Turn on sign-in, and create your one login
 
-1. **Build → Authentication → Get started**.
-2. Under **Sign-in method**, enable **Email/Password**.
-3. Go to the **Users** tab → **Add user** → enter your own email and a password. This app has no public sign-up screen on purpose (so no one else can create an account) — you make your one account here, once.
+1. In the left-hand menu under **Build**, click **Authentication**.
+2. Click **Get started**.
+3. You'll see a list of sign-in methods. Click **Email/Password**.
+4. Toggle the first switch (**Email/Password**) to **on**. Leave the second one (passwordless) off. Click **Save**.
+5. Click the **Users** tab (near the top of the Authentication page).
+6. Click **Add user**.
+7. Type in an email address (can be your real one) and choose a password you'll remember — this becomes your login for the app. Click **Add user**.
 
-## 4. Enable GitHub Pages for this repo
+That's the only account anyone can ever sign in with — there's no public "sign up" button on the app itself, on purpose.
 
-1. On GitHub, go to the repo's **Settings → Pages**.
-2. Under **Build and deployment**, set **Source** to "Deploy from a branch", branch `main`, folder `/ (root)`.
-3. Under **Custom domain**, enter `thesassysnail.com` (a `CNAME` file with this is already committed, so this should auto-fill) and save.
-4. Check **Enforce HTTPS** once it's available (GitHub needs a few minutes to issue the certificate).
-5. Make sure your domain registrar's DNS still points at GitHub Pages (this was presumably already set up since the domain was already connected to this repo) — an `A` record set to GitHub's Pages IPs, or a `CNAME`/`ALIAS` record to `<your-github-username>.github.io`, depending on how you had it configured before.
+## Step 5 — Turn on the website (GitHub Pages)
 
-## 5. Open the app and connect it
+1. Go to this repository on **github.com** and click **Settings** (top right of the repo, not your account settings).
+2. In the left-hand menu, click **Pages**.
+3. Under "Build and deployment" → **Source**, choose **Deploy from a branch**.
+4. Under **Branch**, pick `main` and `/ (root)`, then click **Save**.
+5. Scroll to **Custom domain**, type `thesassysnail.com`, and click **Save**. (There's already a file in this repo that tells GitHub about this domain, so it should be quick.)
+6. Wait a few minutes, then refresh the page — once it's ready, tick **Enforce HTTPS** if it appears as an option.
+7. If your domain was already pointed at this GitHub Pages site before (you mentioned it was), you likely don't need to touch anything else. If the page shows a DNS warning, that means your domain registrar's settings need to point here — tell me and I'll walk you through exactly what to change there too.
 
-1. Visit `https://thesassysnail.com` on your phone (or laptop first, to test).
-2. On first load you'll see **"Connect your private space"** — paste the `firebaseConfig` object from step 1 exactly as shown (it's fine to paste the whole `{ ... }` block, including the `key: value` syntax — the app accepts real JS-object or JSON style) and tap **Save & continue**.
-   - If it complains about formatting, just make sure each key is in double quotes, e.g. `{"apiKey": "AIza...", "projectId": "..."}`.
-3. Sign in with the email/password you created in step 3.
-4. You're in. This device is now remembered — you won't need to paste the config again on it. Repeat step 5 on any other device (phone, laptop) using the *same* Firebase config and the *same* login, and your check-offs will sync between them.
+## Step 6 — Connect the app to your Firebase project
 
-## 6. Install it on your phone
+1. Visit **thesassysnail.com** (give it a few minutes after Step 5 if it doesn't load right away).
+2. You'll see **"Connect your private space"** with a big paste box.
+3. Go back to the Firebase tab from Step 2, find that `const firebaseConfig = { ... };` box, and copy the **whole thing** — you can just select from `const` all the way to the closing `;`, copy, and paste it in as-is. You don't need to clean it up or remove anything.
+4. Tap **Save & continue**.
+5. Now sign in with the email and password you created in Step 4.
 
-- **iPhone (Safari):** open the site → tap the **Share** icon → **Add to Home Screen**.
-- **Android (Chrome):** open the site → tap the **⋮** menu → **Add to Home screen** / **Install app** (Chrome may also prompt you automatically).
+You're in. This device now remembers the connection — you won't see that paste screen again on it. To use it on another device (like a second phone or a laptop), open the site there and repeat Step 6 with the same config and same login; your checkmarks will stay in sync between devices.
 
-It'll then open full-screen like a normal app, and keeps working offline (your check-offs sync back up next time you're online).
+## Step 7 — Put it on your home screen
+
+- **iPhone:** open the site in Safari → tap the **Share** icon (square with an arrow) → **Add to Home Screen**.
+- **Android:** open the site in Chrome → tap the **⋮** (three dots) → **Add to Home screen** (Chrome sometimes offers this automatically as a banner).
+
+It'll now open full-screen like a normal app.
+
+---
+
+## If something goes wrong
+
+- **"That doesn't look like a valid Firebase config"** when pasting in Step 6 — make sure you copied starting from `const firebaseConfig = {` all the way through the final `};`, not just part of it.
+- **Can't sign in** — double check the email/password from Step 4 (Firebase console → Authentication → Users). You can also tap "Forgot password?" on the sign-in screen to get a reset email.
+- **Site doesn't load at all / wrong content** — GitHub Pages (Step 5) can take a few minutes after saving; also double-check your domain's DNS if it shows a warning there.
+- Stuck on anything else — just tell me what you see on the screen and I'll figure out the next click with you.
 
 ## Notes
 
-- Your Firebase config is not a secret password — it's stored on each device's browser (`localStorage`), not committed to the repo. Real access control is enforced by the Firestore rules in step 2 plus your login.
-- The old art-site content wasn't deleted, just moved to `/archive-old-site/` in this repo in case you want it back later.
-- Everything about your routine (sections, items, stars, which days they show on) is editable from the **Settings** tab in the app itself — no code changes needed for day-to-day tweaks.
+- Nothing you paste in Step 6 is a secret password — it's stored only in that device's browser, never sent anywhere but your own Firebase project. The actual privacy protection is the Rules from Step 3 plus your login.
+- The old art-site content wasn't deleted — it's saved in this repo under `/archive-old-site/` in case you want any of it back.
+- Once everything's connected, all future changes to your routine (adding/removing/renaming tasks, changing which days something shows up) happen right inside the app's **Settings** tab — no more setup needed after today.

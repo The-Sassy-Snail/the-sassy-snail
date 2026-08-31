@@ -11,6 +11,24 @@ function screen(html) {
   root.innerHTML = `<div class="screen">${html}</div>`;
 }
 
+// Accepts what Firebase's console actually shows you — including
+// "const firebaseConfig = { ... };" with unquoted keys — not just strict JSON,
+// since that's what someone will copy-paste in practice.
+function parseFirebaseConfigText(raw) {
+  let text = raw.trim();
+  if (!text) throw new Error('Paste your Firebase config first.');
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start === -1 || end === -1 || end < start) {
+    throw new Error("That doesn't look like a config — it should contain a { ... } block.");
+  }
+  text = text.slice(start, end + 1);
+  text = text.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, (m, inner) => '"' + inner.replace(/"/g, '\\"') + '"');
+  text = text.replace(/([{,]\s*)([A-Za-z_$][A-Za-z0-9_$]*)(\s*:)/g, '$1"$2"$3');
+  text = text.replace(/,\s*([}\]])/g, '$1');
+  return JSON.parse(text);
+}
+
 async function boot() {
   const config = fb.getStoredConfig();
   if (!config) {
@@ -37,17 +55,17 @@ function showConfigScreen(error) {
   screen(`
     <div class="config-card">
       <h1>Connect your private space</h1>
-      <p>This app stores your data in a Firebase project that belongs to <em>you</em> — nobody else can read it. If you haven't made one yet, follow <code>SETUP.md</code> in the repo, then paste the web app config object below.</p>
+      <p>This app stores your data in a Firebase project that belongs to <em>you</em> — nobody else can read it. If you haven't made one yet, follow <code>SETUP.md</code> in the repo (Step 4). Then come back here, select <strong>all</strong> of the <code>firebaseConfig</code> block Firebase showed you, copy it, and paste it below exactly as it was shown — you don't need to edit or clean it up first.</p>
       ${error ? `<p class="error">${error}</p>` : ''}
-      <textarea id="config-input" rows="8" placeholder='{"apiKey": "...", "authDomain": "...", "projectId": "...", ...}'></textarea>
+      <textarea id="config-input" rows="8" placeholder='const firebaseConfig = {&#10;  apiKey: "...",&#10;  authDomain: "...",&#10;  ...&#10;};'></textarea>
       <button class="btn primary" id="save-config">Save & continue</button>
     </div>
   `);
   document.getElementById('save-config').onclick = () => {
-    const raw = document.getElementById('config-input').value.trim();
+    const raw = document.getElementById('config-input').value;
     try {
-      const parsed = JSON.parse(raw);
-      if (!parsed.apiKey || !parsed.projectId) throw new Error('Missing apiKey/projectId');
+      const parsed = parseFirebaseConfigText(raw);
+      if (!parsed.apiKey || !parsed.projectId) throw new Error("That's missing apiKey or projectId — make sure you copied the whole block.");
       fb.setStoredConfig(parsed);
       boot();
     } catch (e) {

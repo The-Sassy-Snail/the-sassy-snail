@@ -119,7 +119,7 @@ This makes your phone buzz at, say, 7am and 8pm, even if the app isn't open — 
 **8d. Turn it on in the app**
 1. Open the app → **Settings** tab → find **🔔 Notifications**.
 2. Paste the Web Push key from step 8a into the box.
-3. Set your preferred morning/evening times.
+3. Set your preferred morning/evening times, and optionally turn on **"Hourly water reminders"** with a from/to time — it'll nudge you once every hour in that window.
 4. Tap **"Turn on for this device"** and allow notifications when your browser/phone asks.
 5. Repeat this step (8d) on each additional device — the Web Push key carries over automatically, but each device needs its own permission grant.
 

@@ -269,3 +269,64 @@ export async function fetchLogsInRange(uid, startKey, endKey) {
   });
   return result;
 }
+
+// ---- water tracker (one doc per day, a running glass count) ----
+
+function waterDocRef(uid, dateKey) {
+  const { fsMod, db } = ctx;
+  return fsMod.doc(db, 'users', uid, 'water', dateKey);
+}
+
+export function watchWater(uid, dateKey, cb) {
+  const { fsMod } = ctx;
+  return fsMod.onSnapshot(waterDocRef(uid, dateKey), (snap) => {
+    cb(snap.exists() ? snap.data() : { count: 0 });
+  });
+}
+
+export async function addWaterGlasses(uid, dateKey, delta) {
+  const { fsMod } = ctx;
+  await fsMod.setDoc(
+    waterDocRef(uid, dateKey),
+    { count: fsMod.increment(delta), updatedAt: fsMod.serverTimestamp() },
+    { merge: true }
+  );
+}
+
+// ---- weight tracker (one doc per day) ----
+
+function weightDocRef(uid, dateKey) {
+  const { fsMod, db } = ctx;
+  return fsMod.doc(db, 'users', uid, 'weight', dateKey);
+}
+
+export async function fetchWeight(uid, dateKey) {
+  const { fsMod } = ctx;
+  const snap = await fsMod.getDoc(weightDocRef(uid, dateKey));
+  return snap.exists() ? snap.data() : null;
+}
+
+export async function saveWeight(uid, dateKey, value, unit) {
+  const { fsMod } = ctx;
+  await fsMod.setDoc(weightDocRef(uid, dateKey), {
+    value,
+    unit,
+    updatedAt: fsMod.serverTimestamp(),
+  });
+}
+
+export async function fetchWeightInRange(uid, startKey, endKey) {
+  const { fsMod, db } = ctx;
+  const col = fsMod.collection(db, 'users', uid, 'weight');
+  const q = fsMod.query(
+    col,
+    fsMod.where(fsMod.documentId(), '>=', startKey),
+    fsMod.where(fsMod.documentId(), '<=', endKey)
+  );
+  const snap = await fsMod.getDocs(q);
+  const result = {};
+  snap.forEach((d) => {
+    result[d.id] = d.data();
+  });
+  return result;
+}

@@ -21,6 +21,9 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail,
     enabled: false,
     morningTime: '07:00',
     eveningTime: '20:00',
+    waterEnabled: false,
+    waterStartHour: 6,
+    waterEndHour: 21,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     tokens: [],
   };
@@ -43,6 +46,9 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail,
       enabled: notify.enabled,
       morningTime: notify.morningTime,
       eveningTime: notify.eveningTime,
+      waterEnabled: notify.waterEnabled,
+      waterStartHour: notify.waterStartHour,
+      waterEndHour: notify.waterEndHour,
       timezone: notify.timezone,
       vapidKey: fb.getStoredVapidKey() || null,
     });
@@ -81,6 +87,17 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail,
           <label>Morning <input type="time" id="notify-morning" value="${notify.morningTime}" /></label>
           <label>Evening <input type="time" id="notify-evening" value="${notify.eveningTime}" /></label>
         </div>
+
+        <label class="notify-row">
+          <span>💧 Hourly water reminders</span>
+          <input type="checkbox" id="notify-water-enabled" ${notify.waterEnabled ? 'checked' : ''} />
+        </label>
+        <div class="notify-times">
+          <label>From <input type="time" id="notify-water-start" value="${String(notify.waterStartHour).padStart(2, '0')}:00" /></label>
+          <label>To <input type="time" id="notify-water-end" value="${String(notify.waterEndHour).padStart(2, '0')}:00" /></label>
+        </div>
+        <p class="hint">Reminds you once every hour, on the hour, in that window.</p>
+
         <p class="hint">One-time per device: paste your Web Push key from Firebase (see SETUP.md), then turn notifications on below.</p>
         <input id="notify-vapid" placeholder="Web Push (VAPID) key" value="${escapeAttr(fb.getStoredVapidKey())}" />
         <button class="btn primary small" id="notify-enable-device" style="margin-top:0.6rem;">Turn on for this device</button>
@@ -106,6 +123,18 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail,
     });
     container.querySelector('#notify-evening').addEventListener('change', (e) => {
       notify.eveningTime = e.target.value;
+      persistNotify();
+    });
+    container.querySelector('#notify-water-enabled').addEventListener('change', (e) => {
+      notify.waterEnabled = e.target.checked;
+      persistNotify();
+    });
+    container.querySelector('#notify-water-start').addEventListener('change', (e) => {
+      notify.waterStartHour = Number(e.target.value.split(':')[0]);
+      persistNotify();
+    });
+    container.querySelector('#notify-water-end').addEventListener('change', (e) => {
+      notify.waterEndHour = Number(e.target.value.split(':')[0]);
       persistNotify();
     });
     container.querySelector('#notify-vapid').addEventListener('change', (e) => {

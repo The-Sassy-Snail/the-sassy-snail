@@ -6,6 +6,7 @@ import { renderCalendar } from './views/calendar.js';
 import { renderSettings } from './views/settings.js';
 import { renderTasks } from './views/tasks.js';
 import { renderNotes } from './views/notes.js';
+import { renderHome } from './views/home.js';
 
 const root = document.getElementById('app-root');
 
@@ -158,7 +159,8 @@ function showApp(user) {
       </header>
       <main id="view" class="view"></main>
       <nav class="tab-bar">
-        <button class="tab active" data-tab="today">✅<span>Today</span></button>
+        <button class="tab active" data-tab="home">🏠<span>Home</span></button>
+        <button class="tab" data-tab="today">✅<span>Today</span></button>
         <button class="tab" data-tab="tasks">☑️<span>Tasks</span></button>
         <button class="tab" data-tab="notes">🗒️<span>Notes</span></button>
         <button class="tab" data-tab="calendar">📅<span>Calendar</span></button>
@@ -179,6 +181,10 @@ function showApp(user) {
     setActiveTab(name);
     if (currentView && typeof currentView.destroy === 'function') currentView.destroy();
     currentView = renderFn() || null;
+  }
+
+  function showHome() {
+    enter('home', () => renderHome(view, { userEmail: user.email, onNav: (key) => routes[key]?.() }));
   }
 
   function showToday(dateKey) {
@@ -213,18 +219,20 @@ function showApp(user) {
     );
   }
 
+  const routes = {
+    home: showHome,
+    today: showToday,
+    tasks: showTasks,
+    notes: showNotes,
+    calendar: showCalendar,
+    settings: showSettings,
+  };
+
   tabs.forEach((t) => {
-    t.addEventListener('click', () => {
-      const name = t.getAttribute('data-tab');
-      if (name === 'today') showToday();
-      if (name === 'tasks') showTasks();
-      if (name === 'notes') showNotes();
-      if (name === 'calendar') showCalendar();
-      if (name === 'settings') showSettings();
-    });
+    t.addEventListener('click', () => routes[t.getAttribute('data-tab')]?.());
   });
 
-  showToday();
+  showHome();
 }
 
 boot();

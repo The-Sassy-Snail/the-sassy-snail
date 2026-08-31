@@ -79,7 +79,6 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail 
             .map(
               (it, iIdx) => `
             <li class="editor-item" data-sidx="${sIdx}" data-iidx="${iIdx}">
-              <button class="icon-btn star-toggle ${it.starred ? 'active' : ''}" data-star="${sIdx}:${iIdx}">⭐</button>
               <input class="item-input" data-item="${sIdx}:${iIdx}" value="${escapeAttr(it.label)}" />
               <button class="icon-btn" data-move-item="${sIdx}:${iIdx}" data-dir="-1" ${iIdx === 0 ? 'disabled' : ''}>↑</button>
               <button class="icon-btn" data-move-item="${sIdx}:${iIdx}" data-dir="1" ${iIdx === sec.items.length - 1 ? 'disabled' : ''}>↓</button>
@@ -180,16 +179,6 @@ export function renderSettings(container, { onSignOut, onReconfigure, userEmail 
         const [sIdx, iIdx] = inp.getAttribute('data-item').split(':').map(Number);
         template.sections[sIdx].items[iIdx].label = inp.value.trim() || 'Untitled';
         persist();
-      });
-    });
-
-    editor.querySelectorAll('.star-toggle').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const [sIdx, iIdx] = btn.getAttribute('data-star').split(':').map(Number);
-        const it = template.sections[sIdx].items[iIdx];
-        it.starred = !it.starred;
-        persist();
-        draw();
       });
     });
 

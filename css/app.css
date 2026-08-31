@@ -282,7 +282,6 @@ h1, h2, .app-name, .card-title, .config-card h1 {
 
 .item-label { line-height: 1.35; }
 .item input[type='checkbox']:checked ~ .item-label { color: var(--text-dim); text-decoration: line-through; text-decoration-color: var(--border); }
-.star { color: var(--star); }
 
 .link-btn#jump-today { display: block; margin: 0.4rem auto 0.6rem; }
 
@@ -388,7 +387,6 @@ h1, h2, .app-name, .card-title, .config-card h1 {
   font-size: 0.9rem;
 }
 .icon-btn.danger { color: var(--danger); }
-.icon-btn.star-toggle.active { color: var(--star); border-color: var(--star); }
 
 .day-picker { margin-bottom: 0.7rem; }
 .day-picker-label { display: block; font-size: 0.8rem; color: var(--text-dim); font-weight: 700; margin-bottom: 0.4rem; }

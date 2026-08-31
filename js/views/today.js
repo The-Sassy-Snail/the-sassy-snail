@@ -95,7 +95,7 @@ export function renderToday(container, initialDateKey, opts = {}) {
             <li class="item">
               <label>
                 <input type="checkbox" data-item="${it.id}" ${dayLog.checked && dayLog.checked[it.id] ? 'checked' : ''} ${!editable ? 'disabled' : ''} />
-                <span class="item-label">${it.label}${it.starred ? ' <span class=\"star\">⭐</span>' : ''}</span>
+                <span class="item-label">${it.label}</span>
               </label>
             </li>`
             )

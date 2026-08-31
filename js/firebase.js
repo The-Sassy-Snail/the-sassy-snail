@@ -182,6 +182,78 @@ export async function removeDeviceToken(uid, token) {
   );
 }
 
+// ---- tasks (one-off to-dos, separate from the recurring daily routine) ----
+
+function tasksCol(uid) {
+  const { fsMod, db } = ctx;
+  return fsMod.collection(db, 'users', uid, 'tasks');
+}
+
+export function watchTasks(uid, cb) {
+  const { fsMod } = ctx;
+  const q = fsMod.query(tasksCol(uid), fsMod.orderBy('createdAt', 'desc'));
+  return fsMod.onSnapshot(q, (snap) => {
+    cb(snap.docs.map((d) => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) })));
+  });
+}
+
+export async function addTask(uid, text, dueDate) {
+  const { fsMod } = ctx;
+  await fsMod.addDoc(tasksCol(uid), {
+    text,
+    dueDate: dueDate || null,
+    done: false,
+    createdAt: fsMod.serverTimestamp(),
+  });
+}
+
+export async function updateTask(uid, taskId, patch) {
+  const { fsMod, db } = ctx;
+  await fsMod.updateDoc(fsMod.doc(db, 'users', uid, 'tasks', taskId), patch);
+}
+
+export async function deleteTask(uid, taskId) {
+  const { fsMod, db } = ctx;
+  await fsMod.deleteDoc(fsMod.doc(db, 'users', uid, 'tasks', taskId));
+}
+
+// ---- notes / journal ----
+
+function notesCol(uid) {
+  const { fsMod, db } = ctx;
+  return fsMod.collection(db, 'users', uid, 'notes');
+}
+
+export function watchNotes(uid, cb) {
+  const { fsMod } = ctx;
+  const q = fsMod.query(notesCol(uid), fsMod.orderBy('createdAt', 'desc'));
+  return fsMod.onSnapshot(q, (snap) => {
+    cb(snap.docs.map((d) => ({ id: d.id, ...d.data({ serverTimestamps: 'estimate' }) })));
+  });
+}
+
+export async function addNote(uid, text) {
+  const { fsMod } = ctx;
+  await fsMod.addDoc(notesCol(uid), {
+    text,
+    createdAt: fsMod.serverTimestamp(),
+    updatedAt: fsMod.serverTimestamp(),
+  });
+}
+
+export async function updateNote(uid, noteId, text) {
+  const { fsMod, db } = ctx;
+  await fsMod.updateDoc(fsMod.doc(db, 'users', uid, 'notes', noteId), {
+    text,
+    updatedAt: fsMod.serverTimestamp(),
+  });
+}
+
+export async function deleteNote(uid, noteId) {
+  const { fsMod, db } = ctx;
+  await fsMod.deleteDoc(fsMod.doc(db, 'users', uid, 'notes', noteId));
+}
+
 export async function fetchLogsInRange(uid, startKey, endKey) {
   const { fsMod, db } = ctx;
   const col = fsMod.collection(db, 'users', uid, 'logs');

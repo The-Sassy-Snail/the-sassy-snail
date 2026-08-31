@@ -4,6 +4,8 @@ import { toDateKey } from './util.js';
 import { renderToday } from './views/today.js';
 import { renderCalendar } from './views/calendar.js';
 import { renderSettings } from './views/settings.js';
+import { renderTasks } from './views/tasks.js';
+import { renderNotes } from './views/notes.js';
 
 const root = document.getElementById('app-root');
 
@@ -157,6 +159,8 @@ function showApp(user) {
       <main id="view" class="view"></main>
       <nav class="tab-bar">
         <button class="tab active" data-tab="today">✅<span>Today</span></button>
+        <button class="tab" data-tab="tasks">☑️<span>Tasks</span></button>
+        <button class="tab" data-tab="notes">🗒️<span>Notes</span></button>
         <button class="tab" data-tab="calendar">📅<span>Calendar</span></button>
         <button class="tab" data-tab="settings">⚙️<span>Settings</span></button>
       </nav>
@@ -165,40 +169,56 @@ function showApp(user) {
 
   const view = document.getElementById('view');
   const tabs = Array.from(document.querySelectorAll('.tab'));
+  let currentView = null;
 
   function setActiveTab(name) {
     tabs.forEach((t) => t.classList.toggle('active', t.getAttribute('data-tab') === name));
   }
 
+  function enter(name, renderFn) {
+    setActiveTab(name);
+    if (currentView && typeof currentView.destroy === 'function') currentView.destroy();
+    currentView = renderFn() || null;
+  }
+
   function showToday(dateKey) {
-    setActiveTab('today');
-    renderToday(view, dateKey || toDateKey(new Date()));
+    enter('today', () => renderToday(view, dateKey || toDateKey(new Date())));
+  }
+
+  function showTasks() {
+    enter('tasks', () => renderTasks(view));
+  }
+
+  function showNotes() {
+    enter('notes', () => renderNotes(view));
   }
 
   function showCalendar() {
-    setActiveTab('calendar');
-    renderCalendar(view, (dateKey) => showToday(dateKey));
+    enter('calendar', () => renderCalendar(view, (dateKey) => showToday(dateKey)));
   }
 
   function showSettings() {
-    setActiveTab('settings');
-    renderSettings(view, {
-      userEmail: user.email,
-      getSWRegistration: () => swRegistrationPromise,
-      onSignOut: async () => {
-        await fb.signOutUser();
-      },
-      onReconfigure: () => {
-        fb.clearStoredConfig();
-        location.reload();
-      },
-    });
+    enter('settings', () =>
+      renderSettings(view, {
+        userEmail: user.email,
+        getSWRegistration: () => swRegistrationPromise,
+        onSignOut: async () => {
+          await fb.signOutUser();
+        },
+        onReconfigure: () => {
+          fb.clearStoredConfig();
+          location.reload();
+        },
+      })
+    );
   }
 
   tabs.forEach((t) => {
     t.addEventListener('click', () => {
       const name = t.getAttribute('data-tab');
       if (name === 'today') showToday();
+      if (name === 'tasks') showTasks();
+      if (name === 'notes') showNotes();
       if (name === 'calendar') showCalendar();
       if (name === 'settings') showSettings();
     });

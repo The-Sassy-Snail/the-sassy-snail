@@ -11,22 +11,40 @@ function screen(html) {
   root.innerHTML = `<div class="screen">${html}</div>`;
 }
 
-// Accepts what Firebase's console actually shows you — including
-// "const firebaseConfig = { ... };" with unquoted keys — not just strict JSON,
-// since that's what someone will copy-paste in practice.
+// Accepts whatever Firebase's console actually shows you — the whole code
+// sample (imports, initializeApp call, comments and all) or just the
+// firebaseConfig object by itself, with unquoted keys and a trailing
+// semicolon — not just strict JSON, since that's what someone will really
+// copy-paste. Finds the "firebaseConfig = { ... }" object by matching
+// balanced braces rather than assuming it's the only thing pasted in.
 function parseFirebaseConfigText(raw) {
-  let text = raw.trim();
-  if (!text) throw new Error('Paste your Firebase config first.');
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
-  if (start === -1 || end === -1 || end < start) {
+  const text = raw || '';
+  if (!text.trim()) throw new Error('Paste your Firebase config first.');
+  const marker = text.indexOf('firebaseConfig');
+  const braceStart = text.indexOf('{', marker === -1 ? 0 : marker);
+  if (braceStart === -1) {
     throw new Error("That doesn't look like a config — it should contain a { ... } block.");
   }
-  text = text.slice(start, end + 1);
-  text = text.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, (m, inner) => '"' + inner.replace(/"/g, '\\"') + '"');
-  text = text.replace(/([{,]\s*)([A-Za-z_$][A-Za-z0-9_$]*)(\s*:)/g, '$1"$2"$3');
-  text = text.replace(/,\s*([}\]])/g, '$1');
-  return JSON.parse(text);
+  let depth = 0;
+  let braceEnd = -1;
+  for (let i = braceStart; i < text.length; i++) {
+    if (text[i] === '{') depth++;
+    else if (text[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        braceEnd = i;
+        break;
+      }
+    }
+  }
+  if (braceEnd === -1) {
+    throw new Error("Found the start of the config but not its closing '}' — make sure you copied the whole block.");
+  }
+  let obj = text.slice(braceStart, braceEnd + 1);
+  obj = obj.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, (m, inner) => '"' + inner.replace(/"/g, '\\"') + '"');
+  obj = obj.replace(/([{,]\s*)([A-Za-z_$][A-Za-z0-9_$]*)(\s*:)/g, '$1"$2"$3');
+  obj = obj.replace(/,\s*([}\]])/g, '$1');
+  return JSON.parse(obj);
 }
 
 async function boot() {

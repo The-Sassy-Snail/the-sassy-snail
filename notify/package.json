@@ -1,0 +1,9 @@
+{
+  "name": "sassy-snail-notify",
+  "private": true,
+  "type": "module",
+  "description": "Scheduled reminder sender, run by .github/workflows/reminders.yml — not part of the deployed site.",
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

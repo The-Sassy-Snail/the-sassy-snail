@@ -1,4 +1,34 @@
-const CACHE_NAME = 'routine-shell-v4';
+const CACHE_NAME = 'routine-shell-v5';
+
+// Firebase Cloud Messaging needs to run inside the service worker so a push
+// can show a notification even while the app/tab is closed. The Firebase
+// config isn't a build-time constant here (it's whatever the user pasted
+// in), so app.js appends it as a query string when registering this worker,
+// and we read it back out here — the standard trick Firebase's own docs
+// recommend for apps without a bundler-time config file.
+(function initMessaging() {
+  const fbConfigRaw = new URLSearchParams(self.location.search).get('fbConfig');
+  if (!fbConfigRaw) return;
+  try {
+    const firebaseConfig = JSON.parse(fbConfigRaw);
+    importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+    messaging.onBackgroundMessage((payload) => {
+      const title = (payload.notification && payload.notification.title) || 'Daily Routine';
+      const options = {
+        body: (payload.notification && payload.notification.body) || '',
+        icon: './icons/icon-192.png',
+        badge: './icons/icon-192.png',
+        data: payload.data || {},
+      };
+      self.registration.showNotification(title, options);
+    });
+  } catch (e) {
+    console.warn('Messaging init failed in service worker', e);
+  }
+})();
 const SHELL_FILES = [
   './',
   './index.html',
@@ -45,5 +75,17 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => caches.match(request).then((cached) => cached || caches.match('./index.html')))
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow('./');
+    })
   );
 });

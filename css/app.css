@@ -359,6 +359,30 @@ h1, h2, .app-name, .card-title, .config-card h1 {
 
 /* ---- settings view ---- */
 .settings-account { padding: 1.1rem; margin-bottom: 1.2rem; }
+
+.settings-notify { padding: 1.1rem; margin-bottom: 1.2rem; }
+.notify-row { display: flex; align-items: center; justify-content: space-between; margin: 0.6rem 0; font-weight: 600; }
+.notify-row input[type='checkbox'] { width: 1.3rem; height: 1.3rem; accent-color: var(--accent-strong); }
+.notify-times { display: flex; gap: 1rem; margin-bottom: 0.6rem; }
+.notify-times label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.82rem; color: var(--text-dim); font-weight: 700; }
+.notify-times input[type='time'] {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+  font-family: inherit;
+}
+#notify-vapid {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.85rem;
+  font-family: ui-monospace, monospace;
+}
 .settings-actions { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
 .hint { color: var(--text-dim); font-size: 0.85rem; margin-top: -0.4rem; margin-bottom: 1rem; }
 

@@ -95,6 +95,41 @@ It'll now open full-screen like a normal app.
 
 ---
 
+## Step 8 — Notifications (optional): a real reminder at set times
+
+This makes your phone buzz at, say, 7am and 8pm, even if the app isn't open — like a normal app reminder. It needs two more one-time pieces set up: a "Web Push" key from Firebase, and a way to actually fire the reminder at the right time each day (this app uses this GitHub repo's free scheduled Actions for that, so no paid Firebase plan is needed).
+
+**8a. Get the Web Push key**
+1. In Firebase console, click the gear icon ⚙️ next to "Project Overview" → **Project settings**.
+2. Click the **Cloud Messaging** tab.
+3. Scroll to **"Web configuration"** → **"Web Push certificates"** → click **Generate key pair**.
+4. Copy the long key string it shows you.
+
+**8b. Get a service account key** (this lets the scheduled reminder job talk to your Firebase project — keep this file private, never share it or commit it anywhere)
+1. Still in Project settings, click the **Service accounts** tab.
+2. Click **Generate new private key** → confirm → a `.json` file downloads to your computer.
+3. Open that file in a text editor and copy its entire contents.
+
+**8c. Add it as a GitHub secret**
+1. On GitHub, go to this repo → **Settings → Secrets and variables → Actions**.
+2. Click **New repository secret**.
+3. Name: `FIREBASE_SERVICE_ACCOUNT`. Value: paste the entire JSON file content from step 8b. Click **Add secret**.
+4. You can now delete the downloaded `.json` file from your computer — it's safely stored as a secret.
+
+**8d. Turn it on in the app**
+1. Open the app → **Settings** tab → find **🔔 Notifications**.
+2. Paste the Web Push key from step 8a into the box.
+3. Set your preferred morning/evening times.
+4. Tap **"Turn on for this device"** and allow notifications when your browser/phone asks.
+5. Repeat this step (8d) on each additional device — the Web Push key carries over automatically, but each device needs its own permission grant.
+
+**Notes:**
+- **On iPhone**, this only works if the app is added to your Home Screen (Step 7) and opened from there, not from a regular Safari tab — that's an Apple restriction, not something in the app.
+- Reminders can arrive a few minutes later than the exact time you set (GitHub's free scheduler checks every ~15 minutes, and can be a little slower during their busy periods) — fine for a routine reminder, not something to rely on for anything time-critical.
+- If you go a couple of months without pushing any change to this repo, GitHub automatically pauses scheduled jobs. If reminders stop arriving after a long quiet stretch, ask me and I'll re-enable it (or just make any small commit).
+
+---
+
 ## If something goes wrong
 
 - **"That doesn't look like a valid Firebase config"** when pasting in Step 6 — make sure you copied starting from `const firebaseConfig = {` all the way through the final `};`, not just part of it.

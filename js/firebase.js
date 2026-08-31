@@ -4,17 +4,27 @@
 
 const SDK_VERSION = '10.14.1';
 const CONFIG_KEY = 'sb-firebase-config';
+const VAPID_KEY_STORAGE = 'sb-vapid-key';
+
+export function getStoredVapidKey() {
+  return localStorage.getItem(VAPID_KEY_STORAGE) || '';
+}
+
+export function setStoredVapidKey(key) {
+  localStorage.setItem(VAPID_KEY_STORAGE, key);
+}
 
 let appPromise = null;
 
 async function loadSdk() {
   const base = `https://www.gstatic.com/firebasejs/${SDK_VERSION}`;
-  const [appMod, authMod, fsMod] = await Promise.all([
+  const [appMod, authMod, fsMod, msgMod] = await Promise.all([
     import(`${base}/firebase-app.js`),
     import(`${base}/firebase-auth.js`),
     import(`${base}/firebase-firestore.js`),
+    import(`${base}/firebase-messaging.js`),
   ]);
-  return { appMod, authMod, fsMod };
+  return { appMod, authMod, fsMod, msgMod };
 }
 
 export function getStoredConfig() {
@@ -34,11 +44,11 @@ export function clearStoredConfig() {
   localStorage.removeItem(CONFIG_KEY);
 }
 
-let ctx = null; // { appMod, authMod, fsMod, app, auth, db }
+let ctx = null; // { appMod, authMod, fsMod, msgMod, app, auth, db }
 
 export async function initFirebase(config) {
   if (ctx) return ctx;
-  const { appMod, authMod, fsMod } = await loadSdk();
+  const { appMod, authMod, fsMod, msgMod } = await loadSdk();
   const app = appMod.initializeApp(config);
   const auth = authMod.getAuth(app);
   const db = fsMod.getFirestore(app);
@@ -48,8 +58,29 @@ export async function initFirebase(config) {
     // multiple tabs open, or browser doesn't support it — fine, app still works online
     console.warn('Offline persistence unavailable:', e.code || e);
   }
-  ctx = { appMod, authMod, fsMod, app, auth, db };
+  ctx = { appMod, authMod, fsMod, msgMod, app, auth, db };
   return ctx;
+}
+
+// Requests notification permission and returns an FCM registration token for
+// this device, or null if the browser doesn't support push (e.g. iOS Safari
+// not installed to the home screen) or the user declines permission.
+export async function requestNotificationToken(vapidKey, swRegistration) {
+  const { msgMod, app } = ctx;
+  const supported = await msgMod.isSupported().catch(() => false);
+  if (!supported) return null;
+
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') return null;
+
+  const messaging = msgMod.getMessaging(app);
+  return msgMod.getToken(messaging, { vapidKey, serviceWorkerRegistration: swRegistration });
+}
+
+export function onForegroundMessage(cb) {
+  const { msgMod, app } = ctx;
+  const messaging = msgMod.getMessaging(app);
+  return msgMod.onMessage(messaging, cb);
 }
 
 export function onAuthChange(cb) {
@@ -115,6 +146,40 @@ export function watchDayLog(uid, dateKey, cb) {
   return fsMod.onSnapshot(logDocRef(uid, dateKey), (snap) => {
     cb(snap.exists() ? snap.data() : { checked: {} });
   });
+}
+
+function notifyDocRef(uid) {
+  const { fsMod, db } = ctx;
+  return fsMod.doc(db, 'users', uid, 'meta', 'notify');
+}
+
+export async function fetchNotifySettings(uid) {
+  const { fsMod } = ctx;
+  const snap = await fsMod.getDoc(notifyDocRef(uid));
+  return snap.exists() ? snap.data() : null;
+}
+
+export async function writeNotifySettings(uid, settings) {
+  const { fsMod } = ctx;
+  await fsMod.setDoc(notifyDocRef(uid), settings, { merge: true });
+}
+
+export async function addDeviceToken(uid, token) {
+  const { fsMod } = ctx;
+  await fsMod.setDoc(
+    notifyDocRef(uid),
+    { tokens: fsMod.arrayUnion(token) },
+    { merge: true }
+  );
+}
+
+export async function removeDeviceToken(uid, token) {
+  const { fsMod } = ctx;
+  await fsMod.setDoc(
+    notifyDocRef(uid),
+    { tokens: fsMod.arrayRemove(token) },
+    { merge: true }
+  );
 }
 
 export async function fetchLogsInRange(uid, startKey, endKey) {

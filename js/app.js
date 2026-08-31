@@ -47,12 +47,27 @@ function parseFirebaseConfigText(raw) {
   return JSON.parse(obj);
 }
 
+let swRegistrationPromise = Promise.resolve(null);
+
+function registerServiceWorker(config) {
+  if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+  const params = new URLSearchParams({ fbConfig: JSON.stringify(config) });
+  swRegistrationPromise = navigator.serviceWorker
+    .register(`service-worker.js?${params.toString()}`)
+    .catch((e) => {
+      console.warn('SW registration failed', e);
+      return null;
+    });
+  return swRegistrationPromise;
+}
+
 async function boot() {
   const config = fb.getStoredConfig();
   if (!config) {
     showConfigScreen();
     return;
   }
+  registerServiceWorker(config);
   try {
     await fb.initFirebase(config);
   } catch (e) {
@@ -169,6 +184,7 @@ function showApp(user) {
     setActiveTab('settings');
     renderSettings(view, {
       userEmail: user.email,
+      getSWRegistration: () => swRegistrationPromise,
       onSignOut: async () => {
         await fb.signOutUser();
       },
@@ -189,12 +205,6 @@ function showApp(user) {
   });
 
   showToday();
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch((e) => console.warn('SW registration failed', e));
-  });
 }
 
 boot();

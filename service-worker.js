@@ -1,4 +1,4 @@
-const CACHE_NAME = 'routine-shell-v8';
+const CACHE_NAME = 'routine-shell-v9';
 
 // Firebase Cloud Messaging needs to run inside the service worker so a push
 // can show a notification even while the app/tab is closed. The Firebase
